@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.bytesgo</groupId>
   <artifactId>bytesgo-parent</artifactId>
-  <version>6</version>
+  <version>7-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>${project.artifactId}</name>
   <description>bytesgo parent</description>
@@ -46,7 +46,7 @@
   </ciManagement>
 
   <properties>
-    <central.publishing.maven.plugin>0.6.0</central.publishing.maven.plugin>
+    <central.publishing.maven.plugin.version>0.8.0</central.publishing.maven.plugin.version>
     <github.org>bytesgo</github.org>
     <github.repo>parent</github.repo>
     <jdk.version>1.8</jdk.version>
@@ -298,6 +298,11 @@
           <artifactId>maven-checkstyle-plugin</artifactId>
           <version>${maven.checkstyle.plugin.version}</version>
         </plugin>
+        <plugin>
+          <groupId>org.sonatype.central</groupId>
+          <artifactId>central-publishing-maven-plugin</artifactId>
+          <version>${central.publishing.maven.plugin.version}</version>
+        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
@@ -425,164 +430,14 @@
             </executions>
           </plugin>
           <plugin>
-            <groupId>org.sonatype.plugins</groupId>
-            <artifactId>nexus-staging-maven-plugin</artifactId>
-            <extensions>true</extensions>
-            <configuration>
-              <serverId>ossrh</serverId>
-              <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-              <autoReleaseAfterClose>true</autoReleaseAfterClose>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>release2</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-source-plugin</artifactId>
-            <configuration>
-              <attach>true</attach>
-            </configuration>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>jar-no-fork</goal>
-                </goals>
-                <phase>verify</phase>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>attach-javadocs</id>
-                <goals>
-                  <goal>jar</goal>
-                  <goal>aggregate</goal>
-                </goals>
-                <phase>verify</phase>
-                <configuration>
-                  <charset>${project.build.sourceEncoding}</charset>
-                  <encoding>${project.build.sourceEncoding}</encoding>
-                  <docencoding>${project.build.sourceEncoding}</docencoding>
-                  <additionalJOption>-Xdoclint:none</additionalJOption>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-gpg-plugin</artifactId>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>sign</goal>
-                </goals>
-                <phase>verify</phase>
-                <configuration>
-                  <executable>${gpg.executable}</executable>
-                  <passphrase>${gpg.passphrase}</passphrase>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
             <groupId>org.sonatype.central</groupId>
             <artifactId>central-publishing-maven-plugin</artifactId>
-            <version>${central.publishing.maven.plugin}</version>
+            <version>${central.publishing.maven.plugin.version}</version>
             <extensions>true</extensions>
             <configuration>
-              <publishingServerId>ossrh2</publishingServerId>
+              <publishingServerId>ossrh</publishingServerId>
               <autoPublish>true</autoPublish>
               <waitUntil>published</waitUntil>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>release-github</id>
-      <distributionManagement>
-        <repository>
-          <id>ossrh</id>
-          <url>
-            https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-        <snapshotRepository>
-          <id>ossrh</id>
-          <url>
-            https://oss.sonatype.org/content/repositories/snapshots/</url>
-        </snapshotRepository>
-      </distributionManagement>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-source-plugin</artifactId>
-            <configuration>
-              <attach>true</attach>
-            </configuration>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>jar-no-fork</goal>
-                </goals>
-                <phase>verify</phase>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>attach-javadocs</id>
-                <goals>
-                  <goal>jar</goal>
-                  <goal>aggregate</goal>
-                </goals>
-                <phase>verify</phase>
-                <configuration>
-                  <charset>${project.build.sourceEncoding}</charset>
-                  <encoding>${project.build.sourceEncoding}</encoding>
-                  <docencoding>${project.build.sourceEncoding}</docencoding>
-                  <additionalJOption>-Xdoclint:none</additionalJOption>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-gpg-plugin</artifactId>
-            <configuration>
-              <gpgArguments>
-                <arg>--pinentry-mode</arg>
-                <arg>loopback</arg>
-              </gpgArguments>
-            </configuration>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>sign</goal>
-                </goals>
-                <phase>verify</phase>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.sonatype.plugins</groupId>
-            <artifactId>nexus-staging-maven-plugin</artifactId>
-            <extensions>true</extensions>
-            <configuration>
-              <serverId>ossrh</serverId>
-              <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-              <autoReleaseAfterClose>true</autoReleaseAfterClose>
             </configuration>
           </plugin>
         </plugins>
